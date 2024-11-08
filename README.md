@@ -2,8 +2,6 @@
 
 A Bash script that monitors New Zealand earthquakes using the GeoNet API and sends notifications via ntfy.
 
-> Built partly with the help of [Claude](https://claude.ai/)
-
 ## Features
 
 - Monitors earthquakes in New Zealand based on MMI (Modified Mercalli Intensity) level.
@@ -17,7 +15,6 @@ A Bash script that monitors New Zealand earthquakes using the GeoNet API and sen
 The script requires the following dependencies:
 - curl
 - jq
-- ntfy
 
 ## Installation
 
@@ -35,7 +32,7 @@ chmod +x '/usr/local/bin/geonet-earthquake-monitor'
 ```bash
 # Add these to your ~/.bashrc or equivalent
 export NTFY_TOKEN_DEVICES="your-ntfy-token"
-export NTFY_GEONET_URL="ntfy.sh/your-topic"
+export NTFY_GEONET_URL="https://ntfy.sh/your-topic"
 ```
 
 ## Usage
@@ -81,7 +78,7 @@ crontab -e
 ```bash
 HOME=/home/your-use-name
 NTFY_TOKEN_DEVICES=your-token-here
-NTFY_GEONET_URL=ntfy.sh/your-topic
+NTFY_GEONET_URL=https://ntfy.sh/your-topic
 */5 * * * * /usr/local/bin/geonet-earthquake-monitor -m 4 -p 4
 ```
 
@@ -100,7 +97,7 @@ Type=simple
 ExecStart=/usr/local/bin/geonet-earthquake-monitor -m 4 -p 4
 __HOME__
 Environment=NTFY_TOKEN_DEVICES=your-token-here
-Environment=NTFY_GEONET_URL=ntfy.sh/your-topic
+Environment=NTFY_GEONET_URL=https://ntfy.sh/your-topic
 Restart=always
 RestartSec=60
 
@@ -142,7 +139,7 @@ sudo systemctl list-timers --all
 | Variable | Description |
 |----------|-------------|
 | `NTFY_TOKEN_DEVICES` | Authentication token for [ntfy](https://docs.ntfy.sh/) |
-| `NTFY_GEONET_URL` | The ntfy URL to publish to *(e.g., ntfy.sh/earthquakes)* |
+| `NTFY_GEONET_URL` | The ntfy URL to publish to *(e.g., `https://ntfy.sh/earthquakes`)* |
 
 ## Notification Format
 

@@ -3,7 +3,7 @@
 set -uo pipefail
 
 SCRIPT_NAME=$(basename "${0}")
-VERSION="1.0.0"
+VERSION="1.0.1"
 CACHE_FILE="${HOME}/.local/state/geonet-earthquake-monitor/notified.cache"
 
 mkdir -p "$(dirname "${CACHE_FILE}")"
@@ -33,7 +33,7 @@ EOF
 }
 
 check_dependencies() {
-	local DEPS=(curl jq ntfy)
+	local DEPS=(curl jq)
 	for DEP in "${DEPS[@]}"; do
 		if ! command -v "${DEP}" >/dev/null 2>&1; then
 			echo "Error: Required dependency '${DEP}' is not installed." >&2
@@ -75,15 +75,15 @@ send_notification() {
 
 	DISPLAY_TIME=$(date -d "${TIME}" "+%a %b %-d %Y %H:%M")
 
-	if ! ntfy publish \
-		--token "${NTFY_TOKEN_DEVICES}" \
-		--title "${MAGNITUDE}M earthquake ${LOCALITY}" \
-		--tags chart_with_upwards_trend \
-		--priority "${PRIORITY}" \
-		--click="https://www.geonet.org.nz/earthquake/${PUBLIC_ID}" \
-		"${NTFY_GEONET_URL}" \
-		"Depth: ${DEPTH}km at ${DISPLAY_TIME}"; then
-		echo "Error: ntfy failed to send message"
+	if ! curl -s \
+		-H "Authorization: Bearer ${NTFY_TOKEN_DEVICES}" \
+		-H "Title: ${MAGNITUDE}M earthquake ${LOCALITY}" \
+		-H "Tags: chart_with_upwards_trend" \
+		-H "Priority: ${PRIORITY}" \
+		-H "Click: https://www.geonet.org.nz/earthquake/${PUBLIC_ID}" \
+		-d "Depth: ${DEPTH}km at ${DISPLAY_TIME}" \
+		"${NTFY_GEONET_URL}"; then
+		echo "Error: curl failed to send message"
 		exit 1
 	fi
 
